@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Freely distributable
+
+<#if licenseLast??>
+${licenseLast}
+</#if>

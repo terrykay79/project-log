@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections ?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="projectlog.MainController">
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+    <children>
+        <DatePicker layoutX="300.0" layoutY="106.0" />
+        <TextArea layoutX="67.0" layoutY="131.0" prefHeight="200.0" prefWidth="200.0" />
+        <ChoiceBox layoutX="312.0" layoutY="175.0" prefWidth="150.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="NVT" />
+                    <String fx:value="Bezig" />
+                    <String fx:value="Positief" />
+                    <String fx:value="Negatief" />
+                </FXCollections>
+            </items>
+ 
+
+        </ChoiceBox>
+        <ComboBox layoutX="312.0" layoutY="253.0" prefWidth="150.0" promptText="Finish time" visibleRowCount="24" />
+    </children>
+</AnchorPane>
