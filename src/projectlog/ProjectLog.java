@@ -17,16 +17,22 @@ public class ProjectLog extends Application
     public void start(Stage stage)
     {
         Parent root = null;
-      
+        FXMLLoader fxmlLoader=new FXMLLoader();
+        fxmlLoader.setLocation(ProjectLog.class.getResource("/view/main.fxml"));
+        System.out.println(ProjectLog.class.getResource("/view/main.fxml"));
         try {
-            root = FXMLLoader.load(getClass().getResource("main.fxml"));
+            root = (Parent)fxmlLoader.load();
         }
-        catch (IOException e) {
+        catch (Exception e) {
             System.err.println("Don't even bother!");
+            System.exit(0);
         }
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
+       
+        MainController.setStage(stage);
+        stage.setTitle("Project log");
         stage.show();
 
     }
