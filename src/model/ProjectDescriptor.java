@@ -34,11 +34,12 @@ import javafx.beans.property.StringProperty;
  */
 public class ProjectDescriptor implements PUInterface, Comparable
 {
-
-    private static final String TABLE_NAME = "log_descriptions";
-    private static final String LOG_NAME_COLUMN = "log_name";
+    private static final String TABLE_NAME = "project_descriptions";
+    
+    private static final String LOG_NAME_COLUMN = "project_name";
     private static final String DESCRIPTION_COLUMN = "description";
     private static final String LAST_VIEWED_COLUMN = "last_viewed";
+    
     private static final String sqlCreationString
             = "create table " + TABLE_NAME + " ("
             + LOG_NAME_COLUMN + " varchar(20) not null primary key,"

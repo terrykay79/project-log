@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" minHeight="200.0" minWidth="400.0" prefHeight="399.0" prefWidth="632.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectlog.LogOverviewController">
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+    <children>
+        <SplitPane dividerPositions="0.753968253968254" layoutX="200.0" layoutY="120.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="670.0">
+                    <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="165.0" layoutY="59.0" prefHeight="397.0" prefWidth="481.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0">
+                                    <children>
+                                        <TableView fx:id="projectTable" layoutX="45.0" layoutY="46.0" prefHeight="395.0" prefWidth="479.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                                <TableColumn fx:id="projectColumn" prefWidth="478.0" text="Recent logs" />
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane maxWidth="143.0" minHeight="200.0" minWidth="143.0" prefHeight="415.0" prefWidth="143.0">
+                    <children>
+                        <VBox layoutX="447.0" layoutY="14.0" spacing="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button layoutX="452.0" layoutY="14.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewLog" prefHeight="25.0" prefWidth="113.0" text="Add new log" />
+                                <Button mnemonicParsing="false" onAction="#editLog" prefWidth="113.0" text="Edit log" />
+                                <Button mnemonicParsing="false" onAction="#deleteLog" prefWidth="113.0" text="Delete log" />
+                                <Separator />
+                                <Button layoutX="447.0" layoutY="51.0" mnemonicParsing="false" onAction="#todoList" prefWidth="113.0" text="To do list" />
+                                <Button layoutX="452.0" layoutY="94.0" mnemonicParsing="false" onAction="#statistics" prefWidth="113.0" text="Statistics" />
+                                <Separator layoutX="10.0" layoutY="45.0" />
+                                <Button layoutX="494.0" layoutY="221.0" mnemonicParsing="false" onAction="#loadMain" prefWidth="113.0" text="Project list" />
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </AnchorPane>
+           
+            </items>
+        </SplitPane>
+   </children>
+</AnchorPane>

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Deals with underlying SQLite database for storage and retrieval
@@ -24,7 +25,7 @@ public class PersistanceUnit
 
     private PersistanceUnit()
     {
-        // Set up our connection
+        // Set up our connection, load initial log descriptions
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:projectlog.db");
@@ -42,18 +43,17 @@ public class PersistanceUnit
         try {
             s = conn.createStatement();
             // raises SQLException if table not found - e.getErrorCode() == 1
-            executeQuery = s.executeQuery("SELECT * FROM log_descriptions");
+            executeQuery = s.executeQuery("SELECT * FROM project_descriptions");
         }
         catch (SQLException e) {
             if (e.getErrorCode() == 1) {
                 // Table not there, create!
                 try {
                     s.executeUpdate(ProjectDescriptor.getSQLCreationString());
-                    s.executeUpdate("insert into log_descriptions values('ProjectLog','Log for this project',date('2014-10-18'))");
-
                 }
                 catch (SQLException ne) {
                     System.err.println("Cannot create log descriptor table!" + e.getMessage());
+                    System.exit(0);
                 }
             }
         }
@@ -66,19 +66,82 @@ public class PersistanceUnit
                 else {
                     projects = new ArrayList();
                 }
-
                 s.close();
             }
-
             catch (SQLException e) {
                 System.err.println("Error reading log descriptions");
             }
         }
-
         else {
             System.err.println("Error preparing Statement");
         }
+        // Is LogEntry database there?
+        try {
+            s = conn.createStatement();
+            // raises SQLException if table not found - e.getErrorCode() == 1
+            executeQuery = s.executeQuery("SELECT * FROM log_entries");
+        }
+        catch (SQLException e) {
+            if (e.getErrorCode() == 1) {
+                // Table not there, create!
+                try {
+                    System.out.println("Trying to create log_entries : "+LogEntry.getSQLCreationString());
+                    s.executeUpdate(LogEntry.getSQLCreationString());
+                    
+                }
+                catch (SQLException ne) {
+                    System.err.println("Cannot create log entry table!" + e.getMessage());
+                    System.exit(0);
+                }
+            }
+        }
+        
+        // Is ToDo database there?
+        try {
+            s = conn.createStatement();
+            // raises SQLException if table not found - e.getErrorCode() == 1
+            executeQuery = s.executeQuery("SELECT * FROM todo");
+        }
+        catch (SQLException e) {
+            if (e.getErrorCode() == 1) {
+                // Table not there, create!
+                try {
+                    System.out.println("Trying to create todo : "+ToDoItem.getSQLCreationString());
+                    s.executeUpdate(ToDoItem.getSQLCreationString());
+                    
+                }
+                catch (SQLException ne) {
+                    System.err.println("Cannot create to do item table!" + e.getMessage());
+                    System.exit(0);
+                }
+            }
+        }
+    }
 
+    public ArrayList<LogEntry> getLogs(String projectName)
+    {
+        // find all logs for given project
+        ArrayList<LogEntry> logs = null;
+
+        Statement s = null;
+        ResultSet executeQuery = null;
+        try {
+            s = conn.createStatement();
+            // raises SQLException if table not found - e.getErrorCode() == 1
+            executeQuery = s.executeQuery("SELECT * FROM log_entries where log_name='"+projectName+"'");
+        }
+        catch (SQLException e)
+        {
+            System.err.println("Error reading logs from DB : "+e.getMessage());
+        }
+        if (executeQuery!=null)
+        {
+            ArrayList aList = LogEntry.parseQuery(executeQuery);
+            Collections.reverse(aList);
+            return aList;
+        }
+        else
+           return new ArrayList();
     }
 
     public ArrayList<ProjectDescriptor> getProjects()
@@ -91,11 +154,17 @@ public class PersistanceUnit
         this.projects = projects;
     }
 
-    public void create(PUInterface what) throws SQLException
+    public void create(PUInterface what) 
     {
-        what.persist(conn);
+        try {
+            what.persist(conn);
+        }
+        catch (SQLException e) {
+            System.err.println("Error saving log : " + e.getMessage());
+        
+        }
     }
-    
+
     public String getName()
     {
         try {
@@ -114,4 +183,17 @@ public class PersistanceUnit
         }
         return pu;
     }
+
+    public static Connection getConn()
+    {
+        return conn;
+    }
+
+    public static void setConn(Connection conn)
+    {
+        PersistanceUnit.conn = conn;
+    }
+    
+    
 }
+

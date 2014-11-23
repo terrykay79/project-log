@@ -97,12 +97,12 @@ public class NewController implements Initializable
         else {
             newProject = new ProjectDescriptor(title, description);
 
-            try {
+           // try {
                 PersistanceUnit.getPersistanceUnit().create(newProject);
-            }
-            catch (SQLException e) {
-                System.err.println("Error saving : " + e.getMessage());
-            }
+            //}
+            //catch (SQLException e) {
+            //    System.err.println("Error saving : " + e.getMessage());
+           // }
 
             stage.hide();
         }

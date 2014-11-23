@@ -32,6 +32,7 @@ public class ProjectLog extends Application
         stage.setScene(scene);
        
         MainController.setStage(stage);
+        MainController.setScene(scene);
         stage.setTitle("Project log");
         stage.show();
 
