@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -59,6 +61,8 @@ public class ToDoListController implements Initializable
     private TableColumn<ToDoItem, String> toDoListColumn;
     @FXML
     private ChoiceBox<ArrayList> logTypeList;
+    @FXML
+    private TableColumn<ToDoItem, String> completedColumn;
     public String getProjectName()
     {
         return projectName;
@@ -135,9 +139,21 @@ public class ToDoListController implements Initializable
         logTypeList.setItems(myList);
         logTypeList.getSelectionModel().selectFirst();
         
+        logTypeList.getSelectionModel().selectedIndexProperty().addListener(new ChoiceHandler());
+        
         toDoListColumn.setCellValueFactory(cellData -> cellData.getValue().getDetailsForDisplay());
+        completedColumn.setCellValueFactory(cellData -> cellData.getValue().getCompletedDetailsForDisplay());
     }    
 
+    private class ChoiceHandler implements ChangeListener {
+        @Override
+        public void changed(ObservableValue ov, Object valueP, Object newValueP)
+        {
+            String selection = choiceBoxChoices[((Number)newValueP).intValue()];
+            setItemList(selection);
+        }
+    }
+    
     protected void setItemList(String what)
     {
         //toDoTable, toDoListColumn

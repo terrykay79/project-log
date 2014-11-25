@@ -37,6 +37,15 @@ public class MyDate
         return (ft.format(date));
     }
 
+    public static String longToDate(long time)
+    {
+        /** Returns date in format dd-MM-yy */
+        Date date = new Date(time);
+        
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
+        return ft.format(date);
+    }
+    
     public static long stringToLongTime(String time)
     {
         /** Given time in format HH:mm or HH.mm, converts to long value for that time today */

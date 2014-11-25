@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/model/LogEntry.java</file>
-            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/model/ProjectDescriptor.java</file>
-            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/projectlog/LogOverviewController.java</file>
+            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/view/toDoList.fxml</file>
+            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/utilities/MyDate.java</file>
             <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/projectlog/ToDoListController.java</file>
-            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/model/PersistanceUnit.java</file>
             <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/model/ToDoItem.java</file>
-            <file>file:/C:/Users/tezk/Documents/GitHub/project-log/src/projectlog/MainController.java</file>
         </group>
     </open-files>
 </project-private>

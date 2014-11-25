@@ -23,7 +23,8 @@
                                     <children>
                                         <TableView fx:id="toDoTable" layoutX="45.0" layoutY="46.0" prefHeight="395.0" prefWidth="479.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn fx:id="toDoListColumn" prefWidth="478.0" text="Items" />
+                                                <TableColumn fx:id="toDoListColumn" prefWidth="342.0" text="Items" />
+                                                 <TableColumn fx:id="completedColumn" prefWidth="136.0" text="Completed" />
                                             </columns>
                                         </TableView>
                                     </children>

@@ -24,8 +24,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import utilities.MyDate;
 
 /**
  *
@@ -219,6 +221,16 @@ public class ToDoItem implements PUInterface
         return details;
     }
 
+    public StringProperty getCompletedDetailsForDisplay()
+    {
+        StringProperty c = new SimpleStringProperty();
+        if (getCompleted()!=0)
+            c.setValue(MyDate.longToDate(getCompleted()));
+        
+        return c;
+    }
+
+    
     public static List<ToDoItem> getToDoItems(Connection c, String project) throws SQLException
     {
         ArrayList<ToDoItem> myList = new ArrayList();
