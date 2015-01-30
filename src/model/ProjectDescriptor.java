@@ -151,11 +151,6 @@ public class ProjectDescriptor implements PUInterface, Comparable
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                    
                     long rDate = format.parse(r.getString(LAST_VIEWED_COLUMN)).getTime();
-                    
-                    
-                    
-                    System.out.println("Name = "+rLogName+", Date = "+r.getString(LAST_VIEWED_COLUMN));
-
                     myList.add(new ProjectDescriptor(rLogName, rDescription, rDate));
                 }
             }

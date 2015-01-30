@@ -40,6 +40,7 @@ public class ToDoItem implements PUInterface
     private static final String ROOT_TABLE = "log_descriptions";
     private static final String TABLE_NAME = "todo";
     private static final String LOG_NAME_COLUMN = "log_name";
+    private static final String LOG_ID_COLUMN = "log_id";
     private static final String TODO_ID_COLUMN = "todo_id";
     private static final String CREATED_COLUMN = "created";
     private static final String DETAILS_COLUMN = "details";
@@ -48,7 +49,8 @@ public class ToDoItem implements PUInterface
     private static final String sqlCreationString
             = "create table " + TABLE_NAME + " ("
             + LOG_NAME_COLUMN + " varchar(20) not null, "
-            + TODO_ID_COLUMN + " integer autoincrement primary key, " // Should be auto increment.. Will need to change code
+            + LOG_ID_COLUMN + " integer, "
+            + TODO_ID_COLUMN + " integer primary key autoincrement, " // Should be auto increment.. Will need to change code
             + CREATED_COLUMN + " bigint not null, "
             + DETAILS_COLUMN + " varchar(1000) not null, "
             + COMPLETED_COLUMN + " bigint ,"
@@ -61,6 +63,7 @@ public class ToDoItem implements PUInterface
     }
 
     private StringProperty logName;
+    private int logId;
     private StringProperty details;
     private long created;
     private long completed = 0;
@@ -113,6 +116,16 @@ public class ToDoItem implements PUInterface
     public void setLogName(String logName)
     {
         this.logName.set(logName);
+    }
+
+    public int getLogId()
+    {
+        return logId;
+    }
+
+    public void setLogId(int logId)
+    {
+        this.logId = logId;
     }
 
     public StringProperty getDetailsProperty()
@@ -194,9 +207,11 @@ public class ToDoItem implements PUInterface
         if (results.next() == false) {
             // Use insert
             sqlString = "insert into " + TABLE_NAME
-                    + " (" + LOG_NAME_COLUMN + ", " + CREATED_COLUMN + ", " + DETAILS_COLUMN + ")values ('"
-                    + getLogName() + "', '"
+                    + " (" + LOG_NAME_COLUMN + ", " + LOG_ID_COLUMN + ", " + CREATED_COLUMN + ", " + DETAILS_COLUMN + ")values ('"
+                    + getLogName() + "', "
+                    + getLogId() + ", '"
                     + getCreated() + "', '"
+                     
                     + getDetails() + "')";
 
         }
@@ -248,12 +263,11 @@ public class ToDoItem implements PUInterface
         while (results.next()) {
             ToDoItem anItem = new ToDoItem();
             anItem.setLogName(results.getString(LOG_NAME_COLUMN));
+            anItem.setLogId(results.getInt(LOG_ID_COLUMN));
             anItem.setToDoId(results.getInt(TODO_ID_COLUMN));
             anItem.setCreated(results.getLong(CREATED_COLUMN));
             anItem.setDetails(results.getString(DETAILS_COLUMN));
             anItem.setCompleted(results.getLong(COMPLETED_COLUMN));
-
-            System.out.println("ID = " + anItem.getToDoId());
 
             myList.add(anItem);
         }

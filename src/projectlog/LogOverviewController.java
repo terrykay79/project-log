@@ -67,6 +67,8 @@ public class LogOverviewController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         pu = PersistanceUnit.getPersistanceUnit();
+        // Set column to follow table width
+        projectColumn.prefWidthProperty().bind(projectTable.widthProperty());
         //setLogList();
     }
 
@@ -79,7 +81,6 @@ public class LogOverviewController implements Initializable
         
         if (list==null)
         {
-            System.out.println("Cry!");
             return;
         }
         Iterator<LogEntry> i = list.iterator();
@@ -135,6 +136,11 @@ public class LogOverviewController implements Initializable
 
     private void doEditLog(String logName, int logId)
     {
+
+    }
+
+    private void doEditLog(LogEntry aLogEntry)
+    {
         Parent root = null;
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(ProjectLog.class.getResource("/view/newLog.fxml"));
@@ -146,25 +152,31 @@ public class LogOverviewController implements Initializable
         }
         Scene scene = new Scene(root);
         NewLogController controller = fxmlLoader.getController();
-
+        if (aLogEntry!=null)
+            controller.setLog(aLogEntry);
+        
         controller.setStages(mainScene, mainStage, locScene);
         controller.setProjectName(projectName);
+        controller.setLogController(this);
 
         mainStage.setScene(scene);
-
         mainStage.setTitle(projectName + " logs");
     }
-
+    
     @FXML
     private void addNewLog(ActionEvent event)
     {
-        doEditLog(null, 0);
+        doEditLog(null);
+        setLogList();
     }
 
     @FXML
     private void editLog(ActionEvent event)
     {
-
+        LogEntry aLogEntry=projectTable.getSelectionModel().getSelectedItem();
+        
+        //System.out.println("Doing edit log : "+aLogEntry.getLogName()+", "+aLogEntry.getLogId());
+        doEditLog(aLogEntry);
     }
 
     @FXML
@@ -201,6 +213,27 @@ public class LogOverviewController implements Initializable
     @FXML
     private void statistics(ActionEvent event)
     {
+        Parent root = null;
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(ProjectLog.class.getResource("/view/statistics.fxml"));
+        try {
+            root = (Parent) fxmlLoader.load();
+        }
+        catch (IOException e) {
+            System.err.println("Failed to load 'statistics' fxml");
+        }
+        Scene scene = new Scene(root);
+        StatisticsController controller = fxmlLoader.getController();
+                
+        //controller.setStages(mainScene, mainStage, locScene);
+        //controller.setProjectName(projectName);
+        //controller.setLogController(this);
+
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.setTitle(projectName + " statistics");
+        controller.setCharts(logList);
+        newStage.show();
     }
 
 }

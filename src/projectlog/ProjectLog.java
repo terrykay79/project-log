@@ -19,7 +19,7 @@ public class ProjectLog extends Application
         Parent root = null;
         FXMLLoader fxmlLoader=new FXMLLoader();
         fxmlLoader.setLocation(ProjectLog.class.getResource("/view/main.fxml"));
-        System.out.println(ProjectLog.class.getResource("/view/main.fxml"));
+        //System.out.println(ProjectLog.class.getResource("/view/main.fxml"));
         try {
             root = (Parent)fxmlLoader.load();
         }

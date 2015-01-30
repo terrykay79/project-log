@@ -135,7 +135,7 @@ public class MainController implements Initializable
     {
         // Opens logOverview in current scene, store link to main stage so can reload from logOverview
         String projectName=projectTable.getSelectionModel().getSelectedItem().getLogName();
-        System.out.println("Open " + projectName);
+        //System.out.println("Open " + projectName);
 
         Parent root = null;
         FXMLLoader fxmlLoader = new FXMLLoader();

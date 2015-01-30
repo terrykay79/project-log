@@ -49,16 +49,16 @@ public class LogEntry implements PUInterface
     private static final String sqlCreationString
             = "create table " + TABLE_NAME + " ("
             + LOG_NAME_COLUMN + " varchar(20) not null,"
-            + LOG_ID_COLUMN + " integer auto_increment,"
+            + LOG_ID_COLUMN + " integer primary key autoincrement,"
             + STARTED_COLUMN + " bigint not null,"
             + FINISHED_COLUMN + " bigint not null,"
             + AREA_COLUMN + " varchar(5) not null,"
             + DETAILS_COLUMN + " varchar(1000),"
-            + "primary key (" + LOG_NAME_COLUMN + ", " + LOG_ID_COLUMN + "),"
             + "constraint fk_log_name foreign key (" + LOG_NAME_COLUMN + ") references " + ROOT_TABLE + "(" + LOG_NAME_COLUMN + ")"
             + ")";
 
     private StringProperty logName;
+    private int logId;
     private StringProperty details;
     private long started;
     private long finished;
@@ -68,6 +68,7 @@ public class LogEntry implements PUInterface
     {
         started = 0;
         finished = 0;
+        logId = 0;
         logName = new SimpleStringProperty();
         details = new SimpleStringProperty();
     }
@@ -95,6 +96,16 @@ public class LogEntry implements PUInterface
     public void setLogName(String logName)
     {
         this.logName.set(logName);
+    }
+
+    public int getLogId()
+    {
+        return logId;
+    }
+
+    public void setLogId(int logId)
+    {
+        this.logId = logId;
     }
 
     public StringProperty getDetailsProperty()
@@ -177,6 +188,7 @@ public class LogEntry implements PUInterface
                     LogEntry aLog = new LogEntry();
 
                     aLog.setLogName(r.getString(LOG_NAME_COLUMN));
+                    aLog.setLogId((int)r.getLong(LOG_ID_COLUMN));
                     aLog.setStarted(r.getLong(STARTED_COLUMN));
                     aLog.setFinished(r.getLong(FINISHED_COLUMN));
                     aLog.setArea(r.getString(AREA_COLUMN));
@@ -200,7 +212,10 @@ public class LogEntry implements PUInterface
         // log_entries(_log_name_, created, details) //
         Statement s = c.createStatement();
 
-        String sqlString = "insert into " + TABLE_NAME
+        // if log_id == 0, new log otherwise update
+        
+        String sqlString;
+        if (getLogId() == 0) sqlString = "insert into " + TABLE_NAME
                 + "(" + LOG_NAME_COLUMN + ", " + STARTED_COLUMN + ", " + FINISHED_COLUMN + ", " + AREA_COLUMN + ", " + DETAILS_COLUMN + ") "
                 + " values ('"
                 + getLogName() + "', "
@@ -208,7 +223,10 @@ public class LogEntry implements PUInterface
                 + getFinished() + ", '"
                 + getArea() + "', '"
                 + getDetails() + "')";
-        System.out.println("Prepared string = " + sqlString);
+        else sqlString = "update " + TABLE_NAME + " set "   // TODO: No changes saved to completed time
+                 + AREA_COLUMN + " = '" + getArea() + "', "
+                + DETAILS_COLUMN + " = '" + getDetails() + "' "
+                + " where " + LOG_ID_COLUMN + " = '" + getLogId() +"' ";
         if (s.executeUpdate(sqlString) > 0) {
             return true;
         }
@@ -216,5 +234,20 @@ public class LogEntry implements PUInterface
             return false;
         }
 
+    }
+    
+    public static LogEntry find(String logName, int logId)
+    {
+        Connection c = PersistanceUnit.getConn();
+        try {
+            Statement s = c.createStatement();
+            String sqlString = "select * from '"+TABLE_NAME+"' where "+LOG_ID_COLUMN+" = '"+logId+"' and "+LOG_NAME_COLUMN+" = '"+logName+"'";
+            LogEntry aLog = parseQuery(s.executeQuery(sqlString)).get(0);
+            return aLog;
+        } catch (SQLException e) {
+            System.err.println("Error finding log : " + e.getMessage());
+            return null;
+        }
+        
     }
 }

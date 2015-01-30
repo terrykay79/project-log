@@ -42,7 +42,6 @@
                         <ChoiceBox id="choicePicker" fx:id="logTypeList" prefHeight="25.0" prefWidth="112.0" />
                                 <Separator />
                                 <Button layoutX="447.0" layoutY="51.0" mnemonicParsing="false" onAction="#openLogOverview" prefWidth="113.0" text="Log list" />
-                                <Button layoutX="452.0" layoutY="94.0" mnemonicParsing="false" onAction="#statistics" prefWidth="113.0" text="Statistics" />
                                 <Separator layoutX="10.0" layoutY="45.0" />
                                 <Button layoutX="494.0" layoutY="221.0" mnemonicParsing="false" onAction="#loadMain" prefWidth="113.0" text="Project list" />
                             </children>

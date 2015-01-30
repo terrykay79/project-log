@@ -17,6 +17,7 @@
  */
 package projectlog;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -45,16 +48,18 @@ import model.ToDoItem;
  */
 public class ToDoListController implements Initializable
 {
-    static final String [] choiceBoxChoices={"Open only","All","Closed only"};
+
+    static final String[] choiceBoxChoices = {"Open only", "All", "Closed only"};
     private Scene mainScene;
     private Stage mainStage;
     private Scene locScene;
-    
+
     private String projectName;
+    private String currentSelection;
 
     private PersistanceUnit pu;
-    
-    private List <ToDoItem> toDoItems;
+
+    private List<ToDoItem> toDoItems;
     @FXML
     private TableView<ToDoItem> toDoTable;
     @FXML
@@ -63,11 +68,12 @@ public class ToDoListController implements Initializable
     private ChoiceBox<ArrayList> logTypeList;
     @FXML
     private TableColumn<ToDoItem, String> completedColumn;
+
     public String getProjectName()
     {
         return projectName;
     }
-    
+
     public void setStages(Scene mainScene, Stage mainStage, Scene locScene)
     {
         this.mainScene = mainScene;
@@ -84,24 +90,22 @@ public class ToDoListController implements Initializable
     {
         this.locScene = locScene;
     }
-    
-    
-    
+
     public void setProjectName(String projectName)
     {
         this.projectName = projectName;
-        
+
         // List open only ToDo items
         try {
-            toDoItems = ToDoItem.getToDoItems(pu.getConn(),projectName);
-        } catch (SQLException e) {
-            System.err.println("Error reading to do items : "+e.getMessage());
+            toDoItems = ToDoItem.getToDoItems(pu.getConn(), projectName);
+        }
+        catch (SQLException e) {
+            System.err.println("Error reading to do items : " + e.getMessage());
             return;
         }
         setItemList("Open only");
     }
 
-    
     public Scene getMainScene()
     {
         return mainScene;
@@ -128,6 +132,7 @@ public class ToDoListController implements Initializable
     {
         this.mainStage = mainStage;
     }
+
     /**
      * Initializes the controller class.
      */
@@ -135,92 +140,115 @@ public class ToDoListController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         pu = PersistanceUnit.getPersistanceUnit();
-        ObservableList myList = FXCollections.observableArrayList(choiceBoxChoices); 
+        ObservableList myList = FXCollections.observableArrayList(choiceBoxChoices);
         logTypeList.setItems(myList);
         logTypeList.getSelectionModel().selectFirst();
-        
+
         logTypeList.getSelectionModel().selectedIndexProperty().addListener(new ChoiceHandler());
-        
+
         toDoListColumn.setCellValueFactory(cellData -> cellData.getValue().getDetailsForDisplay());
         completedColumn.setCellValueFactory(cellData -> cellData.getValue().getCompletedDetailsForDisplay());
-    }    
+    }
 
-    private class ChoiceHandler implements ChangeListener {
+    private class ChoiceHandler implements ChangeListener
+    {
+
         @Override
         public void changed(ObservableValue ov, Object valueP, Object newValueP)
         {
-            String selection = choiceBoxChoices[((Number)newValueP).intValue()];
+            String selection = choiceBoxChoices[((Number) newValueP).intValue()];
             setItemList(selection);
         }
     }
-    
+
     protected void setItemList(String what)
     {
+        currentSelection = what;
         //toDoTable, toDoListColumn
-        if (toDoItems == null)
+        if (toDoItems == null) {
             return;
+        }
         ObservableList toDoList = FXCollections.observableArrayList();
-        
-        Iterator <ToDoItem> i = toDoItems.iterator();
-        
-        
+
+        Iterator<ToDoItem> i = toDoItems.iterator();
+
         switch (what) {
-            case "Open only" :
+            case "Open only":
                 while (i.hasNext()) {
                     ToDoItem t = i.next();
                     System.out.println(t);
-                    if (t.getCompleted()==0) {
+                    if (t.getCompleted() == 0) {
                         toDoList.add(t);
                     }
                 }
                 break;
-            case "Closed only" :
+            case "Closed only":
                 while (i.hasNext()) {
                     ToDoItem t = i.next();
-                    if (t.getCompleted()!=0)
+                    if (t.getCompleted() != 0) {
                         toDoList.add(t);
+                    }
                 }
                 break;
-            default :
+            default:
                 while (i.hasNext()) {
                     toDoList.add(i.next());
                 }
                 break;
         }
-        
-       toDoTable.setItems(toDoList);
+
+        toDoTable.setItems(toDoList);
     }
-    
+
     @FXML
     private void markAsComplete(ActionEvent event)
     {
         ToDoItem anItem = toDoTable.getSelectionModel().getSelectedItem();
-        
+
         anItem.setCompleted(System.currentTimeMillis());
         try {
             anItem.persist(pu.getConn());
-        } catch (SQLException e) {
-            System.err.println("Error updating todoitem : "+e.getMessage());
+        }
+        catch (SQLException e) {
+            System.err.println("Error updating todoitem : " + e.getMessage());
         }
         
+        setItemList(currentSelection);
     }
 
     @FXML
     private void editLog(ActionEvent event)
     {
+        ToDoItem selected = toDoTable.getSelectionModel().getSelectedItem();
+        String logName = selected.getLogName();
+        int logId = selected.getLogId();
+        
+        Parent root = null;
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(ProjectLog.class.getResource("/view/newLog.fxml"));
+        try {
+            root = (Parent) fxmlLoader.load();
+        }
+        catch (IOException e) {
+            System.err.println("Failed to load 'newLog' fxml");
+        }
+        Scene scene = new Scene(root);
+        NewLogController controller = fxmlLoader.getController();
+
+        controller.setStages(mainScene, mainStage, locScene);
+        controller.setProjectName(projectName);
+        //controller.setLogController(this);
+        controller.setLog(logName, logId);
+        mainStage.setScene(scene);
+
+        mainStage.setTitle(projectName + " logs");
     }
 
     @FXML
     private void openLogOverview(ActionEvent event)
     {
         mainStage.setScene(locScene);
-        mainStage.setTitle(projectName+" logs");
+        mainStage.setTitle(projectName + " logs");
     }
 
-    @FXML
-    private void statistics(ActionEvent event)
-    {
-    }
-
-    
 }

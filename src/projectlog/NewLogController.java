@@ -49,6 +49,9 @@ import view.FXDialog;
  *
  * @author tezk
  */
+
+// TODO if editing, handle times - either allow no change or keep original date part of the time
+
 public class NewLogController implements Initializable
 {
 
@@ -72,14 +75,18 @@ public class NewLogController implements Initializable
     private Scene mainScene;
     private Stage mainStage;
     private Scene logScene;
+    private LogOverviewController logController;
     private String projectName;
-
+    private int logId;
+    // used when editing an old entry, null otherwise
+    private LogEntry editLogEntry;
+    // TODO: Can't remember why this was created...
+    private LogEntry logEntry;
+    
     public void setProjectName(String projectName)
     {
         this.projectName = projectName;
     }
-
-    LogEntry logEntry;
 
     public void setStages(Scene mainScene, Stage mainStage, Scene logScene)
     {
@@ -88,6 +95,34 @@ public class NewLogController implements Initializable
         this.logScene = logScene;
     }
 
+    public LogOverviewController getLogController()
+    {
+        return logController;
+    }
+
+    public void setLogController(LogOverviewController logController)
+    {
+        this.logController = logController;
+    }
+
+    public void setLog(String logName, int logId)
+    {
+        // Use to set fields from existing log, to allow editing
+        LogEntry aLog = LogEntry.find(logName, logId);
+        setLog(aLog);
+    }
+    
+    public void setLog(LogEntry aLogEntry)
+    {
+        logDetails.setText(aLogEntry.getDetails());
+        startTime.setText(MyDate.longToTime(aLogEntry.getStarted()));
+        endTime.setText(MyDate.longToTime(aLogEntry.getFinished()));
+        areaText.setText(aLogEntry.getArea());
+        logId=aLogEntry.getLogId();
+        editLogEntry = aLogEntry;
+        logEntry = aLogEntry;
+    }
+    
     /**
      * Initializes the controller class.
      */
@@ -98,7 +133,8 @@ public class NewLogController implements Initializable
         startTime.setText(MyDate.longToTime(currentTime));
         logEntry = new LogEntry();
         logEntry.setStarted(currentTime);
-
+        logId = 0;
+        editLogEntry = null;
         // Cannot setup focus changes from Scenebuilder! Must add from code..
         endTime.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
@@ -158,7 +194,8 @@ public class NewLogController implements Initializable
 
         logEntry.setDetails(logDetails.getText());
         logEntry.setArea(areaText.getText());
-
+        logEntry.setLogId(logId);
+        
         //logEntry.persist();        
         PersistanceUnit pu = PersistanceUnit.getPersistanceUnit();
         pu.create(logEntry);
@@ -171,7 +208,8 @@ public class NewLogController implements Initializable
                 pu.create(eachItem);
             }
         }
-        
+        if (logController!=null)
+            logController.setLogList();
         // Call cancel() to take us back to log overview
         cancel(null);
     }

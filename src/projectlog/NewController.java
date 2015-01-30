@@ -90,7 +90,7 @@ public class NewController implements Initializable
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
 
-        if ("".equals(title)) {
+        if (title==null || "".equals(title)) {
             // No blank title! Silly!
             new FXDialog("Please set a project title!");
         }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="628.0" prefWidth="668.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectlog.StatisticsController">
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+    <children>
+      <BorderPane prefHeight="628.0" prefWidth="668.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <HBox maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+               <children>
+                        <PieChart fx:id="pieChart" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                        <StackedBarChart fx:id="barChart" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </StackedBarChart>
+               </children>
+            </HBox>
+         </center>
+         <bottom>
+                  <TextArea fx:id="textArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+    </children>
+</AnchorPane>
